@@ -14,6 +14,15 @@ export default function ChooseDatePage() {
 
 const [bookDate, setBookDate] = useState<Dayjs|null>(null);
 
+const handleBookDate = () => {
+  const hour = dayjs(bookDate).hour();
+  if ((hour >= 9 && hour < 11) || (hour >= 13 && hour < 16)) {
+    window.location.href = `/booking/choosedentist/?bookDate=${dayjs(bookDate).format("YYYY-MM-DDTHH:00:00")}`;
+  } else {
+    alert("Please choose a time between 9:00-11:00 or 13:00-16:00.");
+  }
+}
+
     return (
         <div className="bg-blue-100 min-h-screen flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
@@ -30,13 +39,13 @@ const [bookDate, setBookDate] = useState<Dayjs|null>(null);
                 }}
               />
             </LocalizationProvider>
-            <Link
+            {/* <Link
               href={`/booking/choosedentist/?bookDate=${dayjs(bookDate).format("YYYY-MM-DDTHH:00:00")}`}
-            >
-              <button className="bg-blue-300 m-2 p-2 rounded-lg hover:bg-indigo-500 text-white">
+            > */}
+              <button className="bg-blue-300 m-2 p-2 rounded-lg hover:bg-indigo-500 text-white" onClick={handleBookDate}>
                 next
               </button>
-            </Link>
+            {/* </Link> */}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/libs/auth"
 import { getServerSession } from "next-auth";
 import getUserProfile from "@/libs/getUserProfile";
 import Dentist from "@/db/models/Dentist";
@@ -23,8 +23,9 @@ export default async function createDentistPage() {
             })
         } catch(error) {
             console.log(error);
+            alert("Cannot create Dentist, Please try again")
         }
-        // revalidateTag('dentists');
+        revalidateTag('dentists');
         redirect("/dentist");
     }
     

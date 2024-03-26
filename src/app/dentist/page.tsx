@@ -1,13 +1,15 @@
 import DentistCard from "@/components/DentistCard";
 import getDentists from "@/libs/getDentists";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "@/libs/auth"
 import getUserProfile from "@/libs/getUserProfile";
 import DentistCardForAdmin from "@/components/DentistCardfForAdmin";
 import Link from "next/link";
 import { dbConnect } from "@/db/dbConnect";
 import Dentist from "@/db/models/Dentist";
 import deleteDentist from "@/libs/deleteDentist";
+import { revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
 export default async function DentistPage() {
   //console.log(dentist);
@@ -32,7 +34,10 @@ export default async function DentistPage() {
       console.log("Deleted");
     } catch (error) {
       console.log(error);
+      alert("Cannot delete Dentist, Please try again");
     }
+    revalidateTag('dentists');
+    redirect("/dentist");
   };
 
   return (

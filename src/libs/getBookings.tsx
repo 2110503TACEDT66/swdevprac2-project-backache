@@ -1,14 +1,15 @@
 export default async function getBookings(token:string) {
 
-    await new Promise( (resolve) => {
-        setTimeout(resolve, 500);
-    } )
+    // await new Promise( (resolve) => {
+    //     setTimeout(resolve, 500);
+    // } )
 
     const response = await fetch(`${process.env.BACKEND_URL}/api/v1/bookings`, {
         method: "GET",
         headers: {
             authorization: `Bearer ${token}`
-        }
+        },
+        next: {tags:['bookings']}
     });
     if(!response.ok) {
         throw new Error("Failed to fetch bookings");

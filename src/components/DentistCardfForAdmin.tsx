@@ -1,4 +1,3 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { dbConnect } from "@/db/dbConnect";
 import Dentist from "@/db/models/Dentist";
 import { error } from "console";

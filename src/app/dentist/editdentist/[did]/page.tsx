@@ -1,10 +1,11 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/libs/auth"
 import { getServerSession } from "next-auth";
 import getUserProfile from "@/libs/getUserProfile";
 import Dentist from "@/db/models/Dentist";
 import { dbConnect } from "@/db/dbConnect";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import getDentist from "@/libs/getDentist";
 
 export default async function editDentistPage({params} : {params:{did:string}}) {
 
@@ -26,8 +27,9 @@ export default async function editDentistPage({params} : {params:{did:string}}) 
             })
         } catch(error) {
             console.log(error);
+            alert("Cannot edit Dentist, Please try again")
         }
-        // revalidateTag('dentists');
+        revalidateTag('dentists');
         redirect("/dentist");
     }
     
@@ -41,6 +43,8 @@ export default async function editDentistPage({params} : {params:{did:string}}) 
     }
 
     const profile = await getUserProfile(session.user.token);
+
+    const dentist = await getDentist(params.did);
 
     return(
         profile.data.role !== "admin" ? 
@@ -63,7 +67,7 @@ export default async function editDentistPage({params} : {params:{did:string}}) 
                       required
                       id="name"
                       name="name"
-                      placeholder="Name"
+                      placeholder={dentist.data.name}
                       className="w-full px-3 py-2 rounded-md border border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -76,7 +80,7 @@ export default async function editDentistPage({params} : {params:{did:string}}) 
                       required
                       id="year_exp"
                       name="year_exp"
-                      placeholder="Year Experience"
+                      placeholder={dentist.data.year_exp}
                       className="w-full px-3 py-2 rounded-md border border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -89,7 +93,7 @@ export default async function editDentistPage({params} : {params:{did:string}}) 
                       required
                       id="clinic"
                       name="clinic"
-                      placeholder="Clinic"
+                      placeholder={dentist.data.clinic}
                       className="w-full px-3 py-2 rounded-md border border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>

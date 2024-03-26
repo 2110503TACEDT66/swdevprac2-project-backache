@@ -7,6 +7,7 @@ import getUserProfile from "@/libs/getUserProfile";
 import { useRouter } from "next/navigation";
 import getBooking from "@/libs/getBooking";
 import { useSession } from "next-auth/react";
+import { revalidateTag } from "next/cache";
 
 interface Dentist {
   _id: string,
@@ -66,15 +67,21 @@ export default function ChooseDentistPage() {
   
   useEffect(() => {
     const filteredDentists = new Set<Dentist>();
+    console.log("check : " + dentists);
     
     dentists.map((dentist: Dentist) => {
+      console.log(dentist)
       let isOut = false;
       if (dentist.bookings.length === 0) {
+        console.log("Dentist not have Booking")
         filteredDentists.add(dentist);
       } else {
-        
-        dentist.bookings.filter((booking: any) => {
-          if (booking.bookDate === bookDate) {
+        console.log("Check Dentist have already booked?")
+        dentist.bookings.forEach((booking: any) => {
+          console.log(booking.bookDate);
+          console.log((booking.bookDate).substring(0,19));
+          console.log(bookDate);
+          if ((booking.bookDate).substring(0,19) == bookDate) {
             isOut = true;
           }
         }
@@ -84,7 +91,6 @@ export default function ChooseDentistPage() {
         } else {
           filteredDentists.add(dentist);
         }
-        isOut = false;
       }
     });
     
@@ -98,7 +104,7 @@ export default function ChooseDentistPage() {
   const handleBooking = async (dentistId: string) => {
     
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/bookings/${bookingId}`, {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/v1/bookings/${bookingId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -106,25 +112,29 @@ export default function ChooseDentistPage() {
         },
         body: JSON.stringify({
           "dentist": dentistId,
-          "bookDate": dayjs(bookDate).format("YYYY-MM-DDTHH:mm:ss")
+          "bookDate": bookDate 
         })
       });
 
       if (response.ok) {
         // Handle success, maybe show a success message
         console.log("Booking created successfully!");
+        revalidateTag('bookings');
       } else {
         // Handle error response from the server
         console.error("Failed to create booking:", response.statusText);
+        alert("Failed create booking, Please try again");
       }
     } catch (error) {
       console.error("Error creating booking:", error);
+      // alert("Failed create booking, Please try again");
     }
   };
 
 //   console.log(dayjs(bookDate).format("YYYY-MM-DDTHH:mm:ss"))
 //   console.log(token)
 //   console.log(booking)
+console.log(bookDate);
   return (
     <>
       <h1 className="text-center m-2 text-xl font-semibold">Choose Dentist</h1>
@@ -136,7 +146,6 @@ export default function ChooseDentistPage() {
               <h3 className="text-lg">Dr. {dentist.name}</h3>
               <h1>Experience: {dentist.year_exp} Years</h1>
               <h1>Clinic: {dentist.clinic}</h1>
-              <h1>CreatedAt: {dentist.createdAt} </h1>
                 <button className="bg-blue-300 m-2 p-2 rounded-lg hover:bg-indigo-500" 
                   onClick={() => {
                     handleBooking(dentist._id);

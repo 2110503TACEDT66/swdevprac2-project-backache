@@ -6,6 +6,7 @@ import Link from "next/link";
 import getUserProfile from "@/libs/getUserProfile";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { revalidateTag } from "next/cache";
 
 interface Dentist {
   _id: string,
@@ -71,10 +72,11 @@ export default function ChooseDentistPage() {
         filteredDentists.add(dentist);
       } else {
         console.log("Check Dentist have already booked?")
-        dentist.bookings.filter((booking: any) => {
-          console.log(booking.booDate);
+        dentist.bookings.forEach((booking: any) => {
+          console.log(booking.bookDate);
+          console.log((booking.bookDate).substring(0,19));
           console.log(bookDate);
-          if (booking.bookDate === bookDate) {
+          if ((booking.bookDate).substring(0,19) == bookDate) {
             isOut = true;
           }
         }
@@ -84,7 +86,6 @@ export default function ChooseDentistPage() {
         } else {
           filteredDentists.add(dentist);
         }
-        isOut = false;
       }
     });
     
@@ -96,11 +97,12 @@ export default function ChooseDentistPage() {
   // console.log(dayjs(bookDate).format("YYYY-MM-DDTHH:mm:ss"))
   // console.log(token)
   // console.log(userId)
+  console.log(bookDate);
   
   const handleBooking = async (dentistId: string) => {
     
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/dentists/${dentistId}/bookings`, {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/v1/dentists/${dentistId}/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +110,7 @@ export default function ChooseDentistPage() {
         },
         body: JSON.stringify({
           "user": userId,
-          "bookDate": dayjs(bookDate).format("YYYY-MM-DDTHH:00:00")
+          "bookDate": bookDate 
         })
       });
 
@@ -118,9 +120,12 @@ export default function ChooseDentistPage() {
       } else {
         // Handle error response from the server
         console.error("Failed to create booking:", response.statusText);
+        alert("Failed create booking, Please try again");
+        revalidateTag('bookings');
       }
     } catch (error) {
       console.error("Error creating booking:", error);
+      alert("Failed create booking, Please try again");
     }
   };
   
@@ -135,7 +140,6 @@ export default function ChooseDentistPage() {
               <h3 className="text-lg">Dr. {dentist.name}</h3>
               <h1>Experience: {dentist.year_exp} Years</h1>
               <h1>Clinic: {dentist.clinic}</h1>
-              <h1>CreatedAt: {dentist.createdAt} </h1>
                 <button className="bg-blue-300 m-2 p-2 rounded-lg hover:bg-indigo-500" 
                   onClick={() => {
                     handleBooking(dentist._id);

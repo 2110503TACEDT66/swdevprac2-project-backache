@@ -12,6 +12,8 @@ export default function signInPage() {
 
     if (response?.ok) {
       window.location.href = "/";
+    } else {
+      alert("Sign-In failed, Please try again");
     }
   };
 
@@ -45,6 +47,7 @@ export default function signInPage() {
               Password
             </label>
             <input
+              required
               type="password"
               id="password"
               name="password"

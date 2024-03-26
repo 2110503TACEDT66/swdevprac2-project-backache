@@ -21,7 +21,7 @@ export default function TopMenu() {
     }
 
     return(
-        <div className="fixed flex grid-cols-5 bg-cgr-white h-[50px] z-[100] top-0 right-0 left-0 w-screen items-center justify-between">
+        <div className="fixed flex grid-cols-5 bg-white h-[50px] z-50 top-0 right-0 left-0 w-screen items-center justify-between">
             
                 <Link href='/'>
                     <Image src={'/img/medical.png'}
@@ -50,7 +50,9 @@ export default function TopMenu() {
                                     <li><TopMenuItem title='Dentists' pageRef='/dentist'/></li>
                                     <li><TopMenuItem title='Dashboard' pageRef={`/dashboard/${session?.user._id}`}/></li>
                                     <li><TopMenuItem title='Booking' pageRef={`/booking/choosedate/?uid=${session?.user._id}`}/></li>
-                                    <li><TopMenuItem title='Register' pageRef='/register'/></li>
+                                    {
+                                        !session ? <li><TopMenuItem title='Register' pageRef='/register'/></li> : null
+                                    }
                                 </ul>
                         </div>
                     )
@@ -63,7 +65,9 @@ export default function TopMenu() {
                 <li><TopMenuItem title='Dentists' pageRef='/dentist'/></li>
                 <li><TopMenuItem title='Dashboard' pageRef={`/dashboard/${session?.user._id}`}/></li>
                 <li><TopMenuItem title='Booking' pageRef={`/booking/choosedate/?uid=${session?.user._id}`}/></li>
-                <li><TopMenuItem title='Register' pageRef='/register'/></li>
+                {
+                    !session ? <li><TopMenuItem title='Register' pageRef='/register'/></li> : null
+                }
             </ul>
 
 

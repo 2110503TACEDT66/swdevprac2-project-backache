@@ -6,6 +6,7 @@
     width: 80vw; /* Adjust the width as needed */
     height: calc(80vw * 9 / 16); /* Maintain 16:9 aspect ratio */
     position: relative;
+    z-index: 10;
     /* top: 50%; Move the banner down by 50% of its height */
     /* transform: translateY(-50%); Adjust to center the banner vertically */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a box shadow for a card-like effect */

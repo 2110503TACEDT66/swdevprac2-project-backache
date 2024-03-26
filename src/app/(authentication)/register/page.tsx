@@ -34,7 +34,7 @@ export default function RegisterPage() {
       if (response.ok) {
         window.location.href = "/signin";
       } else {
-        // Handle registration failure
+        alert("Registration failed, Please try again");
       }
     } catch (error) {
       console.error("Registration failed:", error);

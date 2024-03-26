@@ -1,10 +1,12 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/libs/auth"
 import getBookings from "@/libs/getBookings"
 import getUserProfile from "@/libs/getUserProfile";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { dbConnect } from "@/db/dbConnect";
 import Booking from "@/db/models/Booking";
+import { revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
 export default async function dashBoardPage( {params} : {params:{uid:string}} ) {
 
@@ -28,6 +30,8 @@ export default async function dashBoardPage( {params} : {params:{uid:string}} ) 
         } catch(error) {
             console.log(error);
         }
+        revalidateTag('bookings');
+        redirect(`/dashboard/${session.user._id}`);
     };
 
     return(
