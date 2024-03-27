@@ -20,7 +20,7 @@ export default function editBookingPage({
 
   const handleBookDate = () => {
     const hour = dayjs(newBookDate).hour();
-    if ((hour >= 9 && hour < 11) || (hour >= 13 && hour < 16)) {
+    if ((hour >= 9 && hour <= 11) || (hour >= 13 && hour <= 16)) {
       window.location.href = `/dashboard/editbooking/choosedentist/${bookingId}?bid=${bookingId}&bookDate=${dayjs(newBookDate).format("YYYY-MM-DDTHH:00:00")}`;
     } else {
       alert("Please choose a time between 9:00-11:00 or 13:00-16:00.");
